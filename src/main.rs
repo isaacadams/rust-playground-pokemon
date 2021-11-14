@@ -13,11 +13,9 @@ fn main() {
 
 fn search_for_wild_pokemon() {
     println!("searching for wild pokemon");
-    let dex = Pokedex::new().unwrap();
 
-    let available_pokemon = dex.pokemon;
-    let index = rand::thread_rng().gen_range(0,available_pokemon.len());
-    let encountered_pokemon = available_pokemon.get(index).unwrap();
+    let dex = Pokedex::new().unwrap();
+    let encountered_pokemon = dex.pick_random_pokemon();
 
     println!("found a wild {} {}!!", encountered_pokemon.number, encountered_pokemon.name);
 }
@@ -55,5 +53,13 @@ impl Pokedex {
         Ok(Pokedex {
             pokemon,
         })
+    }
+
+    fn pick_random_pokemon(&self) -> &Pokemon {
+        let available_pokemon = &self.pokemon;
+        let index = rand::thread_rng().gen_range(0,available_pokemon.len());
+        let encountered_pokemon = available_pokemon.get(index).unwrap();
+
+        return encountered_pokemon;
     }
 }
