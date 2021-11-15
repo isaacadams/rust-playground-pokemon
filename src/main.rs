@@ -1,6 +1,10 @@
 use std::{io::Error};
+use image::EncodableLayout;
 use rand::Rng;
+use show_image::{ImageView, ImageInfo, create_window};
+use reqwest;
 
+#[show_image::main]
 fn main() {
     let mut args = std::env::args().skip(1);
     let command = args.next().unwrap();
@@ -11,6 +15,22 @@ fn main() {
     };
 }
 
+fn display_pokemon(pokemon: &Pokemon) -> Result<(), Box<dyn std::error::Error>> {
+
+    let response = reqwest::blocking::get(format!("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{}.png", &pokemon.get_pokedex_no()))?;
+    let img_bytes = &response.bytes()?;
+    let image = image::load_from_memory(&img_bytes)?;
+    let rgba8 = &image.into_bgr8();
+    let (width, height) = rgba8.dimensions();
+    let image_view = ImageView::new(ImageInfo::bgr8(width, height), &rgba8.as_bytes());
+
+    // Create a window with default options and display the image.
+    let window = create_window(&pokemon.name, Default::default())?;
+    window.set_image("image-001", image_view)?;
+
+    Ok(window.wait_until_destroyed()?)
+}
+
 fn search_for_wild_pokemon() {
     println!("searching for wild pokemon");
 
@@ -18,6 +38,8 @@ fn search_for_wild_pokemon() {
     let encountered_pokemon = dex.pick_random_pokemon();
 
     println!("found a wild {} {}!!", encountered_pokemon.number, encountered_pokemon.name);
+
+    display_pokemon(&encountered_pokemon);
 }
 
 struct Pokedex {
@@ -27,6 +49,13 @@ struct Pokedex {
 struct Pokemon {
     number: String,
     name: String,
+}
+
+impl Pokemon {
+    fn get_pokedex_no(&self) -> i32 {
+        let no = &self.number.parse::<i32>().unwrap();
+        return *no;
+    }
 }
 
 impl Pokedex {
@@ -41,12 +70,9 @@ impl Pokedex {
                 todo!("either the delimiter is wrong or there is corrupted data");
             }
 
-            let number = chunks[0].to_owned();
-            let name = chunks[1].to_owned();
-
             pokemon.push(Pokemon {
-                number,
-                name
+                number: chunks[0].to_owned(),
+                name: chunks[1].to_owned(),
             });
         }
 
