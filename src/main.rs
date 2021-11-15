@@ -19,10 +19,9 @@ fn display_pokemon(pokemon: &Pokemon) -> Result<(), Box<dyn std::error::Error>> 
 
     let response = reqwest::blocking::get(format!("https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{}.png", &pokemon.get_pokedex_no()))?;
     let img_bytes = &response.bytes()?;
-    let image = image::load_from_memory(&img_bytes)?;
-    let rgba8 = &image.into_bgr8();
-    let (width, height) = rgba8.dimensions();
-    let image_view = ImageView::new(ImageInfo::bgr8(width, height), &rgba8.as_bytes());
+    let image = image::load_from_memory(&img_bytes)?.into_bgr8();
+    let (width, height) = image.dimensions();
+    let image_view = ImageView::new(ImageInfo::bgr8(width, height), &image.as_bytes());
 
     // Create a window with default options and display the image.
     let window = create_window(&pokemon.name, Default::default())?;
