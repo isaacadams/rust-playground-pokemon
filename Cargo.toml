@@ -6,9 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rand = "0.5.5"
-image = "0.23.14"
+rand = "0.8.5"
+image = "0.24.3"
 reqwest = { version = "0.11.6", features = ["blocking", "json"] }
-show-image = "0.8.4"
+show-image = "0.12.3"
 rustc-serialize = "0.3"
 hyper = "0.14"
