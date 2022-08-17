@@ -1,13 +1,7 @@
 use hyper::body::Bytes;
 use reqwest;
-use rustc_serialize::json::Json;
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use std::collections::HashMap;
 use std::error::Error;
-use std::ops::Deref;
-
-use crate::pokemon::Pokemon;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PokemonResult {
@@ -20,13 +14,10 @@ pub struct PokemonResult {
 pub struct Sprites {
     #[serde(rename(deserialize = "front_default"))]
     front: String,
-    /* #[serde(flatten)]
-    extra: HashMap<String, Value>, */
 }
 
 pub fn get_pokemon_data(no: u32) -> Result<PokemonResult, reqwest::Error> {
     let response = reqwest::blocking::get(format!("https://pokeapi.co/api/v2/pokemon/{}", &no))?;
-    //println!("{:#?}", response);
     Ok(response.json()?)
 }
 
@@ -43,12 +34,8 @@ impl PokemonResult {
     pub fn name(&self) -> &str {
         &self.name
     }
-}
 
-/* impl Deref for PokemonResult {
-    type Target = Pokemon;
-
-    fn deref(&self) -> &Self::Target {
-        &self.pokemon
+    pub fn print_found_in_wild(&self) {
+        println!("encountered a wild {} {}!", self.id, self.name);
     }
-} */
+}
