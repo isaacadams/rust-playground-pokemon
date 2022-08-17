@@ -1,16 +1,13 @@
+use hyper::body::Bytes;
 use reqwest;
 use rustc_serialize::json::Json;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::HashMap;
+use std::error::Error;
 use std::ops::Deref;
 
 use crate::pokemon::Pokemon;
-
-pub struct PokemonAPIData {
-    pokemon: Pokemon,
-    sprite: String,
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PokemonResult {
@@ -27,22 +24,31 @@ pub struct Sprites {
     extra: HashMap<String, Value>, */
 }
 
-impl PokemonAPIData {
-    pub fn get_pokemon_data(no: u32) -> Result<PokemonAPIData, reqwest::Error> {
-        let data: PokemonResult =
-            reqwest::blocking::get(format!("https://pokeapi.co/api/v2/pokemon/{}", &no))?.json()?;
+pub fn get_pokemon_data(no: u32) -> Result<PokemonResult, reqwest::Error> {
+    let response = reqwest::blocking::get(format!("https://pokeapi.co/api/v2/pokemon/{}", &no))?;
+    //println!("{:#?}", response);
+    Ok(response.json()?)
+}
 
-        Ok(PokemonAPIData {
-            pokemon: Pokemon::new(&data.name, data.id),
-            sprite: data.sprites.front,
-        })
+pub fn fetch(url: &str) -> Result<Bytes, Box<dyn Error>> {
+    let response = reqwest::blocking::get(url)?;
+    Ok(response.bytes()?)
+}
+
+impl PokemonResult {
+    pub fn fetch_sprite(&self) -> Result<Bytes, Box<dyn Error>> {
+        fetch(&self.sprites.front)
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
     }
 }
 
-impl Deref for PokemonAPIData {
+/* impl Deref for PokemonResult {
     type Target = Pokemon;
 
     fn deref(&self) -> &Self::Target {
         &self.pokemon
     }
-}
+} */

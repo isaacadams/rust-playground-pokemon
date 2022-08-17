@@ -1,12 +1,11 @@
 extern crate rustc_serialize;
 use rand::Rng;
-use std::{io::Error, ops::Deref};
+use std::io::Error;
 
 mod api;
 mod pokemon;
 mod window;
 
-use api::PokemonAPIData;
 use pokemon::Pokemon;
 use window::display_image;
 
@@ -24,18 +23,14 @@ fn main() {
 fn search_for_wild_pokemon() {
     println!("searching for wild pokemon");
 
-    //let dex = Pokedex::new().unwrap();
-    //let encountered_pokemon = dex.pick_random_pokemon();
-    //let data = get_pokemon_data(encountered_pokemon.get_pokedex_no()).unwrap();
-
-    let data = PokemonAPIData::get_pokemon_data(pick_random_pokemon()).unwrap();
-    println!("found a wild {}!!", data.deref());
-    display_image(data.name(), data.fetch_sprite().unwrap()).unwrap();
+    let data = api::get_pokemon_data(pick_random_pokemon()).unwrap();
+    let sprite_bytes = data.fetch_sprite().unwrap();
+    //println!("found a wild {}!!", data.deref());
+    display_image(data.name(), sprite_bytes).unwrap();
 }
 
 fn pick_random_pokemon() -> u32 {
-    let index = rand::thread_rng().gen_range(0..800);
-    return index;
+    rand::thread_rng().gen_range(0..800)
 }
 
 struct Pokedex {
