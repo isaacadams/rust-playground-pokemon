@@ -1,6 +1,6 @@
-use std::io::Error;
 use rand::Rng;
 use std::fmt::Display;
+use std::io::Error;
 
 pub struct Pokemon {
     number: u32,
