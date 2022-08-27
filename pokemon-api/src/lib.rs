@@ -17,5 +17,5 @@ pub fn search_for_wild_pokemon() -> PokemonResult {
 }
 
 fn pick_random_pokemon() -> u32 {
-    rand::thread_rng().gen_range(0..800)
+    rand::thread_rng().gen_range(1..905)
 }
