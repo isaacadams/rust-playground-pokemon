@@ -9,3 +9,5 @@ edition = "2021"
 egui = "0.18.1"
 eframe = "0.18.0"
 pokemon-api = { path = "../pokemon-api" }
+hyper = "0.14"
+image = "0.24.3"
