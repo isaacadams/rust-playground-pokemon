@@ -2,7 +2,7 @@
 
 use eframe::App;
 use egui::{ColorImage, RichText, TextureHandle};
-use image::EncodableLayout;
+use pokemon_api::PokemonImage;
 
 // When compiling natively:
 fn main() {
@@ -43,10 +43,9 @@ impl App for MyApp {
                 let pokemon = pokemon_api::search_for_wild_pokemon();
                 self.caught_pokemon = pokemon.name().to_string();
                 let image = pokemon.fetch_sprite().unwrap();
-                self.pokemon_sprite = Some(ctx.load_texture(
-                    "pokemon",
-                    load_image_from_memory(image.as_bytes().as_ref()).unwrap(),
-                )); // ;
+                self.pokemon_sprite = Some(
+                    ctx.load_texture("pokemon", load_image_from_sprite(image.to_image().unwrap())),
+                );
             }
 
             ui.label(create_text(&self.caught_pokemon));
@@ -61,10 +60,8 @@ fn create_text(text: &str) -> RichText {
     RichText::new(text).size(18.0)
 }
 
-fn load_image_from_memory(image_data: &[u8]) -> Result<ColorImage, image::ImageError> {
-    let image = image::load_from_memory(image_data)?;
-    let size = [image.width() as _, image.height() as _];
-    let image_buffer = image.to_rgba8();
-    let pixels = image_buffer.as_flat_samples();
-    Ok(ColorImage::from_rgba_unmultiplied(size, pixels.as_slice()))
+fn load_image_from_sprite(image: PokemonImage) -> ColorImage {
+    let (image, dimensions) = image.to_rgba8();
+    let pixels = image.as_flat_samples();
+    ColorImage::from_rgba_unmultiplied(dimensions, pixels.as_slice())
 }

@@ -3,6 +3,8 @@ use reqwest;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 
+use crate::sprite::SpriteImage;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PokemonResult {
     name: String,
@@ -27,8 +29,8 @@ pub fn fetch(url: &str) -> Result<Bytes, Box<dyn Error>> {
 }
 
 impl PokemonResult {
-    pub fn fetch_sprite(&self) -> Result<Bytes, Box<dyn Error>> {
-        fetch(&self.sprites.front)
+    pub fn fetch_sprite(&self) -> Result<SpriteImage, Box<dyn Error>> {
+        Ok(SpriteImage::new(fetch(&self.sprites.front)?.to_vec()))
     }
 
     pub fn name(&self) -> &str {

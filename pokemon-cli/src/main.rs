@@ -18,5 +18,5 @@ fn main() {
 
 fn search_wild() -> Result<(), Box<dyn std::error::Error>> {
     let pokemon = pokemon_api::search_for_wild_pokemon();
-    display_image::display_image(pokemon.name(), pokemon.fetch_sprite()?)
+    display_image::display_image(pokemon.name(), pokemon.fetch_sprite()?.to_image()?)
 }
