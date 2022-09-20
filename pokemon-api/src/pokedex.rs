@@ -47,8 +47,7 @@ impl Pokedex {
     pub fn pick_random_pokemon(&self) -> &Pokemon {
         let available_pokemon = &self.pokemon;
         let index = rand::thread_rng().gen_range(0..available_pokemon.len());
-        let encountered_pokemon = available_pokemon.get(index).unwrap();
-        return encountered_pokemon;
+        available_pokemon.get(index).unwrap()
     }
 
     pub fn save(&self) -> Result<(), Error> {

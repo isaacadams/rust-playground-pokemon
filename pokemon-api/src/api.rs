@@ -1,5 +1,4 @@
 use hyper::body::Bytes;
-use reqwest;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
 
@@ -20,7 +19,7 @@ pub struct Sprites {
 
 pub fn get_pokemon_data(no: u32) -> Result<PokemonResult, reqwest::Error> {
     let response = reqwest::blocking::get(format!("https://pokeapi.co/api/v2/pokemon/{}", &no))?;
-    Ok(response.json()?)
+    response.json()
 }
 
 pub fn fetch(url: &str) -> Result<Bytes, Box<dyn Error>> {

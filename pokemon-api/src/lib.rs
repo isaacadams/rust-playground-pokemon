@@ -6,6 +6,7 @@ use rand::Rng;
 mod test;
 
 mod api;
+#[allow(dead_code)]
 mod pokedex;
 mod sprite;
 

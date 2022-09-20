@@ -19,7 +19,7 @@ fn main() {
     eframe::run_native(
         "pokemon app",
         options,
-        Box::new(|cc| {
+        Box::new(|_cc| {
             Box::new(MyApp {
                 caught_pokemon: String::from(""),
                 pokemon_sprite: None,
@@ -34,8 +34,8 @@ struct MyApp {
 }
 
 impl App for MyApp {
-    fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(&ctx, |ui| {
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        egui::CentralPanel::default().show(ctx, |ui| {
             ui.label(create_text("Search for Wild Pokemon!"));
 
             if ui.button(create_text("search")).clicked() {
