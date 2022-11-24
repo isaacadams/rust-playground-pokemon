@@ -50,7 +50,7 @@ impl App for MyApp {
 
             ui.label(create_text(&self.caught_pokemon));
             if let Some(i) = &self.pokemon_sprite {
-                ui.image(i, i.size_vec2());
+                ui.image(i, [250_f32, 250_f32]);
             }
         });
     }
