@@ -1,4 +1,4 @@
-use crate::search_for_wild_pokemon;
+use crate::{api, search_for_wild_pokemon, search_pokemon_by_name};
 use image::EncodableLayout;
 
 #[test]
@@ -29,4 +29,20 @@ fn test(dimensions: [usize; 2], data: &[u8]) {
     let len = calculate_len(dimensions);
     println!("{}", len);
     assert_eq!(len, data.len())
+}
+
+#[test]
+fn get_all_pokemon() {
+    let root = api::get_all_pokemon().unwrap();
+    assert!(root.count > 1000);
+    assert_eq!(root.results[0].name, "bulbasaur");
+}
+
+#[test]
+fn search_by_name() {
+    let matches = search_pokemon_by_name("pid").unwrap().iter().fold(String::new(), |acc, p| {
+        format!("{}, {}", acc, p.name)
+    });
+
+    assert!(matches.contains("pidgey") && matches.contains("pidgeot") && matches.contains("rapidash"));
 }
