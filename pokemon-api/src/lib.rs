@@ -17,6 +17,7 @@ pub fn search_for_wild_pokemon() -> PokemonResult {
     println!("searching for wild pokemon");
 
     let random_pokemon_no = pick_random_pokemon();
+    println!("searching for {}", random_pokemon_no);
     let data = api::get_pokemon_data(random_pokemon_no).unwrap();
     data.print_found_in_wild();
     data
