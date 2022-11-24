@@ -1,4 +1,5 @@
 use image::{DynamicImage, ImageResult, RgbImage, RgbaImage};
+use std::ops::Deref;
 
 pub struct SpriteImage {
     data: Vec<u8>,
@@ -40,5 +41,14 @@ impl PokemonImage {
 
     pub fn to_rgba8(self) -> (RgbaImage, [usize; 2]) {
         (self.buffer.to_rgba8(), self.dimensions)
+        //(self.buffer.resize(1000, 1000, image::imageops::FilterType::Gaussian).to_rgba8(), [1000, 1000])
+    }
+}
+
+impl Deref for PokemonImage {
+    type Target = DynamicImage;
+
+    fn deref(&self) -> &Self::Target {
+        &self.buffer
     }
 }

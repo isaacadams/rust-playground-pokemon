@@ -15,6 +15,18 @@ pub struct PokemonResult {
 pub struct Sprites {
     #[serde(rename(deserialize = "front_default"))]
     front: String,
+    other: OtherSprites,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OtherSprites {
+    dream_world: DreamWorldSprites,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DreamWorldSprites {
+    #[serde(rename(deserialize = "front_default"))]
+    front: Option<String>,
 }
 
 pub fn get_pokemon_data(no: u32) -> Result<PokemonResult, reqwest::Error> {
@@ -29,7 +41,9 @@ pub fn fetch(url: &str) -> Result<Bytes, Box<dyn Error>> {
 
 impl PokemonResult {
     pub fn fetch_sprite(&self) -> Result<SpriteImage, Box<dyn Error>> {
-        Ok(SpriteImage::new(fetch(&self.sprites.front)?.to_vec()))
+        //let sprite_url = &self.sprites.other.dream_world.front;
+        let sprite_url = &self.sprites.front;
+        Ok(SpriteImage::new(fetch(&sprite_url)?.to_vec()))
     }
 
     pub fn name(&self) -> &str {
